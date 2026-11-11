@@ -22,11 +22,6 @@ It's static files. Either double-click `index.html`, or:
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
-## Deploy on GitHub Pages
-
-Push this folder to a repo, then *Settings → Pages → Deploy from a branch → `main` / `(root)`*.
-The `.gitignore` keeps Spotify export files out of the repo. Please never commit your own data: it contains IP addresses.
-
 ## Notes
 
 - Times are shown in the viewer's local time zone.
