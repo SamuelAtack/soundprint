@@ -1,0 +1,5 @@
+.DS_Store
+# never commit personal exports
+Streaming_History*.json
+*.zip
+ReadMeFirst*.pdf

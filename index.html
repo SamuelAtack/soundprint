@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Nothing can leave this page: no network requests are allowed after load. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Soundprint – your listening history, visualized</title>
+  <meta name="description" content="Upload your Spotify extended streaming history and explore it. Everything runs in your browser; your data never leaves your device.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23121212'/%3E%3Cpath d='M6 20v-8M11 24V8M16 18v-4M21 26V6M26 20v-8' stroke='%2330d67f' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Soundprint home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path d="M6 20v-8M11 24V8M16 18v-4M21 26V6M26 20v-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+      <span>Soundprint</span>
+    </a>
+    <button id="reset" class="pill" hidden>Load another file</button>
+  </header>
+
+  <main id="landing" class="landing">
+    <section class="hero">
+      <h1>Your listening history,<br><span class="accent">laid out.</span></h1>
+      <p class="lede">Drop in your Spotify <em>Extended streaming history</em> and get top artists, listening habits, streaks and year-by-year trends.</p>
+
+      <label id="drop" class="drop" tabindex="0">
+        <input id="file" type="file" accept=".zip,.json,application/zip,application/json" multiple hidden>
+        <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <strong>Drop your .zip here</strong>
+        <span>or click to browse. You can also select the individual <code>Streaming_History_Audio_*.json</code> files.</span>
+      </label>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <button id="sample" class="ghost">No file yet? Try it with sample data</button>
+    </section>
+
+    <section class="cards3">
+      <article class="card">
+        <h2><span class="num">1</span> Request your data</h2>
+        <p>Go to <strong>spotify.com → Account → Privacy settings</strong> and scroll to <strong>Download your data</strong>. Tick <strong>Extended streaming history</strong> only, then confirm via email.</p>
+      </article>
+      <article class="card">
+        <h2><span class="num">2</span> Wait for the email</h2>
+        <p>Spotify says it can take up to 30 days; it often arrives sooner. Download the zip it links to.</p>
+      </article>
+      <article class="card">
+        <h2><span class="num">3</span> Drop it in here</h2>
+        <p>No need to unzip. Parsing happens on your device, in this tab.</p>
+      </article>
+    </section>
+
+    <section class="privacy card">
+      <h2>🔒 Private by design</h2>
+      <p>This page has no server and no analytics, and a strict content-security policy blocks all network requests once it has loaded. Your files are read in memory and gone when you close the tab. You can verify it yourself: the whole thing is a few hundred lines of plain, readable JavaScript with no dependencies.</p>
+    </section>
+  </main>
+
+  <main id="dash" class="dash" hidden>
+    <section class="toolbar">
+      <div id="years" class="chips" role="tablist" aria-label="Year"></div>
+      <label class="switch" title="Spotify counts a stream only after 30 seconds">
+        <input id="strict" type="checkbox" checked>
+        <span class="track"></span>
+        <span>Ignore plays under 30s</span>
+      </label>
+    </section>
+
+    <section id="stats" class="stats"></section>
+
+    <section class="grid2">
+      <article class="card wide">
+        <header class="cardhead"><h2>Listening by month</h2><span class="sub" id="months-sub"></span></header>
+        <div id="months" class="bars"></div>
+      </article>
+    </section>
+
+    <section class="grid2">
+      <article class="card">
+        <header class="cardhead">
+          <h2>Top</h2>
+          <div class="tabs" id="toptabs" role="tablist"></div>
+          <div class="seg" id="metric" role="group" aria-label="Rank by">
+            <button data-m="ms" class="on">Time</button><button data-m="plays">Plays</button>
+          </div>
+        </header>
+        <ol id="toplist" class="toplist"></ol>
+        <button id="more" class="ghost small" hidden>Show more</button>
+      </article>
+
+      <div class="stack">
+        <article class="card">
+          <header class="cardhead"><h2>Time of day</h2><span class="sub" id="hours-sub"></span></header>
+          <div id="hours" class="bars short"></div>
+        </article>
+        <article class="card">
+          <header class="cardhead"><h2>Where you listen</h2></header>
+          <div id="platforms" class="meters"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="cardhead"><h2>Your week</h2><span class="sub">When you listen most, by day and hour</span></header>
+      <div id="heat" class="heatwrap"></div>
+    </section>
+
+    <section class="card">
+      <header class="cardhead"><h2 id="cal-title">Daily activity</h2><span class="sub">Each square is one day</span></header>
+      <div id="cal" class="calwrap"></div>
+    </section>
+
+    <section class="card" id="years-card" hidden>
+      <header class="cardhead"><h2>Year by year</h2></header>
+      <div id="yearly" class="yearly"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Soundprint is an independent open-source project. It is not affiliated with or endorsed by Spotify AB. “Spotify” is a trademark of its owner.</p>
+  </footer>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+
+  <script src="zip.js"></script>
+  <script src="stats.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
