@@ -189,3 +189,12 @@ main { width: 100%; max-width: 1180px; margin: 0 auto; padding: 8px 24px 40px; f
   .stat .v { font-size: 26px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* share card */
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+.pill.solid { background: var(--accent); color: #000; border-color: var(--accent); }
+.pill.solid:hover { background: #4be394; border-color: #4be394; color: #000; }
+.dlg { border: 0; padding: 16px; border-radius: 16px; background: var(--elev); color: var(--text); max-width: min(92vw, 520px); }
+.dlg::backdrop { background: rgba(0,0,0,.75); }
+.dlg canvas { display: block; width: 100%; max-height: 72vh; object-fit: contain; border-radius: 10px; }
+.dlgbar { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }

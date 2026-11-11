@@ -10,6 +10,8 @@ Explore your Spotify **Extended streaming history**: top artists/tracks/albums/p
 2. Open the site, drop the zip in (no need to unzip). You can also select the `Streaming_History_Audio_*.json` files.
 3. Click *Try it with sample data* (or open `#sample`) to see it without a file.
 
+**Share card:** the *Share card* button renders a 1080×1350 image (hours, top 5 artists and tracks, streak, monthly bars) for the selected year or all time, and downloads it as a PNG. It's drawn locally on a canvas; nothing is uploaded.
+
 Also understands the older "Account data" `StreamingHistory*.json` format (fewer fields, so fewer charts are meaningful).
 
 ## Run locally
@@ -30,7 +32,7 @@ The `.gitignore` keeps Spotify export files out of the repo. Please never commit
 - Times are shown in the viewer's local time zone.
 - "Ignore plays under 30s" (on by default) mirrors Spotify's own definition of a stream. The skip rate always uses every play.
 - Video and audiobook rows are ignored. Duplicate rows (e.g. the same file added twice) are removed.
-- Files: `stats.js` (parsing + aggregation, testable in Node), `zip.js` (tiny zip reader using `DecompressionStream`), `app.js` (UI), `style.css`.
+- Files: `stats.js` (parsing + aggregation, testable in Node), `zip.js` (tiny zip reader using `DecompressionStream`), `card.js` (share card), `app.js` (UI), `style.css`.
 - Zip support needs a modern browser (Chrome/Edge 80+, Firefox 113+, Safari 16.4+).
 
 Not affiliated with or endorsed by Spotify AB. No Spotify logos, fonts or artwork are used.

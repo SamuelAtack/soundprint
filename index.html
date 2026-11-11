@@ -58,11 +58,14 @@
   <main id="dash" class="dash" hidden>
     <section class="toolbar">
       <div id="years" class="chips" role="tablist" aria-label="Year"></div>
+      <div class="tools">
+      <button id="share" class="pill solid">Share card</button>
       <label class="switch" title="Spotify counts a stream only after 30 seconds">
         <input id="strict" type="checkbox" checked>
         <span class="track"></span>
         <span>Ignore plays under 30s</span>
       </label>
+      </div>
     </section>
 
     <section id="stats" class="stats"></section>
@@ -119,10 +122,19 @@
     <p>Soundprint is an independent open-source project. It is not affiliated with or endorsed by Spotify AB. “Spotify” is a trademark of its owner.</p>
   </footer>
 
+  <dialog id="cardDlg" class="dlg" aria-label="Share card">
+    <canvas id="cardCanvas"></canvas>
+    <div class="dlgbar">
+      <button id="cardSave" class="pill solid">Download PNG</button>
+      <button id="cardClose" class="pill">Close</button>
+    </div>
+  </dialog>
+
   <div id="tip" class="tip" role="tooltip" hidden></div>
 
   <script src="zip.js"></script>
   <script src="stats.js"></script>
+  <script src="card.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

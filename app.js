@@ -2,6 +2,7 @@
   'use strict';
   const $ = (id) => document.getElementById(id);
   const S = window.Stats;
+  let lastD = null;
   const state = { all: [], year: null, strict: true, metric: 'ms', tab: 'artists', limit: 15 };
 
   /* ---------- tiny DOM helper (no innerHTML => user data can't inject markup) ---------- */
@@ -84,6 +85,7 @@
   /* ---------- rendering ---------- */
   function render() {
     const d = S.compute(state.all, { year: state.year, minMs: state.strict ? 30000 : 0 });
+    lastD = d;
     renderYears(d); renderStats(d); renderMonths(d); renderTop(d); renderHours(d);
     renderPlatforms(d); renderHeat(d); renderCal(d); renderYearly();
   }
@@ -237,6 +239,25 @@
       h('div', null, h('b', { text: r.topTrack ? r.topTrack.name : '–' }), h('span', { text: r.topTrack ? r.topTrack.sub + ' · ' + r.topTrack.plays + ' plays' : '' })),
     )));
   }
+
+  /* ---------- share card ---------- */
+  const dlg = $('cardDlg');
+  $('share').addEventListener('click', () => {
+    if (!lastD || !lastD.plays) return;
+    drawCard($('cardCanvas'), lastD, state.year == null ? 'All time' : String(state.year));
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  $('cardClose').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  $('cardSave').addEventListener('click', () => {
+    $('cardCanvas').toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = h('a', { href: url, download: 'soundprint-' + (state.year == null ? 'all-time' : state.year) + '.png' });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }, 'image/png');
+  });
 
   /* ---------- tooltip ---------- */
   const tip = $('tip');
